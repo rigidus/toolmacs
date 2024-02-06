@@ -1,4 +1,3 @@
-// Внешняя функция
 extern void externalFunction();
 
 void localFunction() {
@@ -6,16 +5,16 @@ void localFunction() {
 }
 
 int main() {
-    // Локальная переменная
+    // local
     int localVariable = 42;
 
-    // Вызов локальной функции
+    // local call
     localFunction();
 
-    // Вызов внешней функции
+    // external call
     externalFunction();
 
-    // Использование внешней переменной
+    // using of external var
     /* printf("Value of localVariable: %d\n", localVariable); */
 
     return 0;

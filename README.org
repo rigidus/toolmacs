@@ -1,1 +1,237 @@
 #+TITILE: toolmacs
+
+* Tools
+
+** Reflection of architecture from code
+
+The general idea is to extract information from each program module about identifiers not declared in that module. In this way we get a set of external references, each of which refers to a variable or function declared in another module.
+
+By extracting all such links we can build a graph that reflects the architecture of the project
+
+*** Installation
+
+Nice to have clang for getting AST from C and C++ code
+
+#+BEGIN_SRC sh
+  sudo apt-get install clang llvm
+#+END_SRC
+
+*** Example of code
+
+#+BEGIN_SRC c :tangle example.c
+  extern void externalFunction();
+
+  void localFunction() {
+      /* printf("External function\n"); */
+  }
+
+  int main() {
+      // local
+      int localVariable = 42;
+
+      // local call
+      localFunction();
+
+      // external call
+      externalFunction();
+
+      // using of external var
+      /* printf("Value of localVariable: %d\n", localVariable); */
+
+      return 0;
+  }
+#+END_SRC
+
+*** Getting AST
+
+We need AST in json
+
+#+BEGIN_SRC sh
+  clang -Xclang -ast-dump=json -fsyntax-only example.c > clang_ast_output.json
+#+END_SRC
+
+*** AST processing
+
+This code recursively traverses the json AST and returns all references it encounters:
+
+#+BEGIN_EXAMPLE
+  python3 example.py
+  extern>:externalFunction
+  declar>:localFunction
+  declar>:main
+  call>:0x1aa5458:localFunction
+  call>:0x1aa5350:externalFunction
+#+END_EXAMPLE
+
+#+BEGIN_SRC python :tangle example.py
+  import json
+
+  def print_all_ids(json_ast):
+      regFun = [];
+
+      def process(node):
+          # if "id" in node:
+          #     print(node["id"])
+          # if "name" in node:
+          #     print(node["name"])
+          if "kind" in node and node["kind"] == "FunctionDecl":
+              # funDecl = node.get("FunctionDecl")
+              name = node.get("name")
+              if "storageClass" in node and node["storageClass"] == "extern":
+                  print("extern>:"+name)
+              else:
+                  print("declar>:"+name)
+          if "referencedDecl" in node:
+              refDecl = node.get("referencedDecl")
+              fid = refDecl.get("id")
+              name = refDecl.get("name")
+              print("call>:"+fid+":"+name)
+              # called_funcs.append(name)
+
+          if "inner" in node:
+              for inner_node in node["inner"]:
+                  process(inner_node)
+
+      ast_data = json.loads(json_ast)
+      process(ast_data)
+
+  if __name__ == "__main__":
+      with open("clang_ast_output.json", "r") as f:
+          json_ast = f.read()
+          top_level_functions = print_all_ids(json_ast)
+          # print("functions:", top_level_functions)
+#+END_SRC
+
+** Org files processing
+
+Similar processing can be performed for files in the org format. In each code block of such a file, we can find references to included blocks in double triangle brackets. These links lead to other blocks in the same file and these blocks are known to us by name, so we can build a graph and visualize it in graphviz
+
+#+BEGIN_SRC elisp :noweb yes :tangle blockgraph.el
+  (require 'cl-lib)
+
+  <<get_org_code_blocks>>
+
+  <<find_ref>>
+
+  <<build_org_code_graph>>
+
+  <<org_code_graph_to_dot>>
+
+  ;; Example usage:
+  (message "%s"
+           (org-code-graph-to-dot (build-org-code-graph)))
+#+END_SRC
+
+*** Getting source blocks
+
+First of all we need get all source code block from current file. We will exclude elisp and ditaa blocks. All founded blocks will return as plist with :name and :value keys.
+
+#+NAME: get_org_code_blocks
+#+BEGIN_SRC elisp
+  (defun get-org-code-blocks ()
+    "Retrieve all code blocks with their names from the current org-mode buffer."
+    (interactive)
+    (save-excursion
+      (goto-char (point-min))
+      (let (code-blocks)
+        (while (re-search-forward "#\\+BEGIN_SRC[ \t]+\\([^ \f\t\n\r\v]+\\)[^\\S-]*" nil t)
+          (let* ((pnt (org-element-at-point))
+                 (lang (match-string-no-properties 1))
+                 (name (org-element-property :name (org-element-at-point)))
+                 (value (org-element-property :value (org-element-at-point))))
+            ;; (message "\n->[%s](%s){%s}\n%s" name lang pnt value)
+            (if (and name
+                     (not (equal lang "elisp"))
+                     (not (equal lang "ditaa")))
+                (push (list :name name :lang lang :value value) code-blocks))))
+        (setq code-blocks (nreverse code-blocks))
+        code-blocks)))
+#+END_SRC
+
+*** Finding refs
+
+Now we need find all <<references>> in triangle brackets for parameter-string
+
+#+NAME: find_ref
+#+BEGIN_SRC elisp
+  (defun find-ref (input-string)
+    "Find all code-block refs in the given string."
+    (let ((regex "<<\\([a-z0-9-_]*?\\)>>" )
+          (matches '())
+          (match-start))
+      (while (string-match regex input-string match-start)
+        (push (match-string 1 input-string) matches)
+        (setq match-start (match-end 0)))
+      (nreverse matches)))
+#+END_SRC
+
+*** Building graph of codeblocks
+
+This function call get-org-code-block to find all blocks and for each of them calls find_ref to add vertices and edges to the graph.
+
+#+NAME: build_org_code_graph
+#+BEGIN_SRC elisp :noweb yes
+  (defvar org-code-graph '()
+    "Variable to store the directed acyclic graph (DAG) representing code block dependencies.")
+
+  <<graph_functions>>
+
+  (defun build-org-code-graph ()
+    "Build a directed acyclic graph (DAG) representing code block dependencies."
+    (interactive)
+    (let ((org-code-graph '())
+          (code-blocks (get-org-code-blocks)))
+      ;; Add vertices for each code block
+      (dolist (block code-blocks)
+        (add-vertex (getf block :name)))
+      ;; Add edges for each reference within code blocks
+      (dolist (block code-blocks)
+        (let* ((block-name (getf block :name))
+               (block-references (find-ref (getf block :value))))
+          (dolist (ref block-references)
+            (add-edge block-name ref))))
+      org-code-graph))
+#+END_SRC
+
+We also need functions for adding vertex and edges to the graph. Representation of graph is associated list, where car is vertex, and cdr is edges.
+
+#+NAME: graph_functions
+#+BEGIN_SRC elisp
+  (defun add-vertex (vertex)
+    "Add a vertex to the graph if it doesn't already exist."
+    (unless (assoc vertex org-code-graph)
+      (push `(,vertex . ()) org-code-graph)))
+
+  (defun add-edge (from to)
+    "Add a directed edge from FROM to TO in the graph."
+    (let ((vertex (assoc from org-code-graph)))
+      (when vertex
+        (setf (cdr vertex) (cons to (cdr vertex))))))
+#+END_SRC
+
+*** Translate graph to DOT
+
+Now we have graph in variable org-code-graph and we want to translate it to DOT for visualize in graphviz. Here we have function for it.
+
+#+NAME: org_code_graph_to_dot
+#+BEGIN_SRC elisp
+  (defun org-code-graph-to-dot (org-code-graph)
+    "Convert org-code-graph to DOT format."
+    (let ((org-code-dot ""))
+      ;; Add the opening line for DOT graph
+      (setf org-code-dot (concat org-code-dot "digraph G {\n"))
+      ;; Add vertices to DOT
+      (dolist (vertex-pair org-code-graph)
+        (setf org-code-dot (concat org-code-dot (format "  \"%s\";\n" (car vertex-pair)))))
+      ;; Add edges to DOT
+      (dolist (vertex-pair org-code-graph)
+        (let ((vertex (car vertex-pair))
+              (dependencies (cdr vertex-pair)))
+          (dolist (dependency dependencies)
+            (setf org-code-dot
+                  (concat org-code-dot
+                          (format "  \"%s\" -> \"%s\";\n" vertex dependency))))))
+      ;; Add the closing line for DOT graph
+      (setf org-code-dot (concat org-code-dot "}\n"))
+      org-code-dot))
+#+END_SRC
