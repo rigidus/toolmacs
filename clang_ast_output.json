@@ -1,5 +1,5 @@
 {
-  "id": "0x1a4e858",
+  "id": "0x151c078",
   "kind": "TranslationUnitDecl",
   "loc": {},
   "range": {
@@ -8,7 +8,7 @@
   },
   "inner": [
     {
-      "id": "0x1a4f080",
+      "id": "0x151c8a0",
       "kind": "TypedefDecl",
       "loc": {},
       "range": {
@@ -22,7 +22,7 @@
       },
       "inner": [
         {
-          "id": "0x1a4ee20",
+          "id": "0x151c640",
           "kind": "BuiltinType",
           "type": {
             "qualType": "__int128"
@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "0x1a4f0f0",
+      "id": "0x151c910",
       "kind": "TypedefDecl",
       "loc": {},
       "range": {
@@ -45,7 +45,7 @@
       },
       "inner": [
         {
-          "id": "0x1a4ee40",
+          "id": "0x151c660",
           "kind": "BuiltinType",
           "type": {
             "qualType": "unsigned __int128"
@@ -54,7 +54,7 @@
       ]
     },
     {
-      "id": "0x1a4f3f8",
+      "id": "0x151cc18",
       "kind": "TypedefDecl",
       "loc": {},
       "range": {
@@ -68,13 +68,13 @@
       },
       "inner": [
         {
-          "id": "0x1a4f1d0",
+          "id": "0x151c9f0",
           "kind": "RecordType",
           "type": {
             "qualType": "struct __NSConstantString_tag"
           },
           "decl": {
-            "id": "0x1a4f148",
+            "id": "0x151c968",
             "kind": "RecordDecl",
             "name": "__NSConstantString_tag"
           }
@@ -82,7 +82,7 @@
       ]
     },
     {
-      "id": "0x1a4f490",
+      "id": "0x151ccb0",
       "kind": "TypedefDecl",
       "loc": {},
       "range": {
@@ -96,14 +96,14 @@
       },
       "inner": [
         {
-          "id": "0x1a4f450",
+          "id": "0x151cc70",
           "kind": "PointerType",
           "type": {
             "qualType": "char *"
           },
           "inner": [
             {
-              "id": "0x1a4e900",
+              "id": "0x151c120",
               "kind": "BuiltinType",
               "type": {
                 "qualType": "char"
@@ -114,7 +114,7 @@
       ]
     },
     {
-      "id": "0x1a4f788",
+      "id": "0x151cfa8",
       "kind": "TypedefDecl",
       "loc": {},
       "range": {
@@ -128,7 +128,7 @@
       },
       "inner": [
         {
-          "id": "0x1a4f730",
+          "id": "0x151cf50",
           "kind": "ConstantArrayType",
           "type": {
             "qualType": "struct __va_list_tag[1]"
@@ -136,13 +136,13 @@
           "size": 1,
           "inner": [
             {
-              "id": "0x1a4f570",
+              "id": "0x151cd90",
               "kind": "RecordType",
               "type": {
                 "qualType": "struct __va_list_tag"
               },
               "decl": {
-                "id": "0x1a4f4e8",
+                "id": "0x151cd08",
                 "kind": "RecordDecl",
                 "name": "__va_list_tag"
               }
@@ -152,7 +152,7 @@
       ]
     },
     {
-      "id": "0x1aa5350",
+      "id": "0x1572a90",
       "kind": "FunctionDecl",
       "loc": {
         "offset": 45,
@@ -182,7 +182,7 @@
       "storageClass": "extern"
     },
     {
-      "id": "0x1aa5458",
+      "id": "0x1572b98",
       "kind": "FunctionDecl",
       "loc": {
         "offset": 71,
@@ -211,7 +211,7 @@
       },
       "inner": [
         {
-          "id": "0x1aa54f8",
+          "id": "0x1572c38",
           "kind": "CompoundStmt",
           "range": {
             "begin": {
@@ -231,7 +231,7 @@
       ]
     },
     {
-      "id": "0x1aa5560",
+      "id": "0x1572ca0",
       "kind": "FunctionDecl",
       "loc": {
         "offset": 137,
@@ -259,7 +259,7 @@
       },
       "inner": [
         {
-          "id": "0x1aa57c8",
+          "id": "0x1572f08",
           "kind": "CompoundStmt",
           "range": {
             "begin": {
@@ -277,7 +277,7 @@
           },
           "inner": [
             {
-              "id": "0x1aa56a0",
+              "id": "0x1572de0",
               "kind": "DeclStmt",
               "range": {
                 "begin": {
@@ -294,7 +294,7 @@
               },
               "inner": [
                 {
-                  "id": "0x1aa5618",
+                  "id": "0x1572d58",
                   "kind": "VarDecl",
                   "loc": {
                     "offset": 201,
@@ -320,7 +320,7 @@
                   "init": "c",
                   "inner": [
                     {
-                      "id": "0x1aa5680",
+                      "id": "0x1572dc0",
                       "kind": "IntegerLiteral",
                       "range": {
                         "begin": {
@@ -345,7 +345,7 @@
               ]
             },
             {
-              "id": "0x1aa5720",
+              "id": "0x1572e60",
               "kind": "CallExpr",
               "range": {
                 "begin": {
@@ -366,7 +366,7 @@
               "valueCategory": "prvalue",
               "inner": [
                 {
-                  "id": "0x1aa5708",
+                  "id": "0x1572e48",
                   "kind": "ImplicitCastExpr",
                   "range": {
                     "begin": {
@@ -387,7 +387,7 @@
                   "castKind": "FunctionToPointerDecay",
                   "inner": [
                     {
-                      "id": "0x1aa56b8",
+                      "id": "0x1572df8",
                       "kind": "DeclRefExpr",
                       "range": {
                         "begin": {
@@ -406,7 +406,7 @@
                       },
                       "valueCategory": "prvalue",
                       "referencedDecl": {
-                        "id": "0x1aa5458",
+                        "id": "0x1572b98",
                         "kind": "FunctionDecl",
                         "name": "localFunction",
                         "type": {
@@ -419,7 +419,7 @@
               ]
             },
             {
-              "id": "0x1aa5778",
+              "id": "0x1572eb8",
               "kind": "CallExpr",
               "range": {
                 "begin": {
@@ -440,7 +440,7 @@
               "valueCategory": "prvalue",
               "inner": [
                 {
-                  "id": "0x1aa5760",
+                  "id": "0x1572ea0",
                   "kind": "ImplicitCastExpr",
                   "range": {
                     "begin": {
@@ -461,7 +461,7 @@
                   "castKind": "FunctionToPointerDecay",
                   "inner": [
                     {
-                      "id": "0x1aa5740",
+                      "id": "0x1572e80",
                       "kind": "DeclRefExpr",
                       "range": {
                         "begin": {
@@ -480,7 +480,7 @@
                       },
                       "valueCategory": "prvalue",
                       "referencedDecl": {
-                        "id": "0x1aa5350",
+                        "id": "0x1572a90",
                         "kind": "FunctionDecl",
                         "name": "externalFunction",
                         "type": {
@@ -493,7 +493,7 @@
               ]
             },
             {
-              "id": "0x1aa57b8",
+              "id": "0x1572ef8",
               "kind": "ReturnStmt",
               "range": {
                 "begin": {
@@ -510,7 +510,7 @@
               },
               "inner": [
                 {
-                  "id": "0x1aa5798",
+                  "id": "0x1572ed8",
                   "kind": "IntegerLiteral",
                   "range": {
                     "begin": {
