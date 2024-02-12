@@ -241,21 +241,34 @@ Now we have graph in variable org-code-graph and we want to translate it to DOT 
 #+transclude: [[file:./test.org::test_code][MyTest]]
 
 #+NAME: block_name
-#+transclude: [[file:./example.c::main][MyTest]] :src cpp :end "return"
+#+transclude: [file:./example.c::main][MyTest]]  :src cpp :end "return"
 
-#+BEGIN: transclusion :filename "test.el" :min 6 :max 11
+#+BEGIN: transclusion :filename "./example.c" :min 0 :max 9999
 
 #+begin_src elisp
-;; 6
-;; -------------------------------------------------------------------
-;; 8
-(message "hello")
-;; 9
-;; 10
-#+end_src
+extern void externalFunction();
 
-#+results:
-: hello
+void localFunction() {
+    /* printf("External function\n"); */
+}
+
+int main() {
+    // local
+    int localVariable = 42;
+
+    // local call
+    localFunction();
+
+    // external call
+    externalFunction();
+
+    // using of external var
+    /* printf("Value of localVariable: %d\n", localVariable); */
+
+    return 0;
+}
+
+#+end_src
 
 #+END:
 
